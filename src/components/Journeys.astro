@@ -1,0 +1,66 @@
+---
+import { SEASONS, TRIP_TYPES, type Lang } from '../lib/constants';
+import type { Trip } from '../lib/trips';
+import { countWord, useTranslations } from '../i18n/ui';
+import TripCard from './TripCard.astro';
+import TripDialog from './TripDialog.astro';
+
+interface Props { trips: Trip[]; lang: Lang }
+const { trips, lang } = Astro.props;
+const t = useTranslations(lang);
+---
+<section class="section" id="journeys" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">{t('jr.eb')}</p>
+      <h2>{t('jr.h2', { n: countWord(trips.length, lang) })}</h2>
+      <p class="lead">{t('jr.lead')}</p>
+    </div>
+
+    <div class="toolbar">
+      <div class="tgroup">
+        <span class="flabel" id="fl-type">{t('tb.type')}</span>
+        <div class="filters" role="group" aria-labelledby="fl-type" data-filter="type">
+          <button type="button" class="chip" data-v="all" aria-pressed="true">{t('f.all')}</button>
+          {TRIP_TYPES.map((ty) => (
+            <button type="button" class="chip" data-v={ty} aria-pressed="false">{t(`types.${ty}`)}</button>
+          ))}
+        </div>
+      </div>
+      <div class="tgroup">
+        <span class="flabel" id="fl-hol">{t('tb.hol')}</span>
+        <div class="filters" role="group" aria-labelledby="fl-hol" data-filter="season">
+          <button type="button" class="chip" data-v="all" aria-pressed="true">{t('f.all')}</button>
+          {SEASONS.map((s) => (
+            <button type="button" class="chip" data-v={s} aria-pressed="false">{t(`filter.${s}`)}</button>
+          ))}
+        </div>
+      </div>
+      <div class="tgroup">
+        <span class="flabel" id="fl-mode">{t('tb.mode')}</span>
+        <div class="modes" role="group" aria-labelledby="fl-mode">
+          <button type="button" data-mode="private" aria-pressed="true">{t('m.private')}</button>
+          <button type="button" data-mode="group" aria-pressed="false">{t('m.group')}</button>
+        </div>
+        <p class="mode-note">
+          <span class="only-private">{t('note_private')}</span><span class="only-group">{t('note_group')}</span>
+        </p>
+      </div>
+      <div class="tgroup">
+        <span class="flabel">{t('tb.acc')}</span>
+        <div class="filters">
+          <button type="button" class="chip chip-acc" id="f-wc" aria-pressed="false">{t('f.wc')}</button>
+        </div>
+        <p class="mode-note">{t('tb.accn')}</p>
+      </div>
+    </div>
+
+    <div class="j-grid" id="j-grid">
+      {trips.map((trip) => <TripCard trip={trip} lang={lang} />)}
+      <p class="j-empty" id="j-empty" hidden>{t('empty')}</p>
+    </div>
+    <p class="j-note">{t('jr.note')}</p>
+  </div>
+</section>
+
+{trips.map((trip) => <TripDialog trip={trip} lang={lang} />)}

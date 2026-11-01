@@ -1,0 +1,27 @@
+---
+import type { Lang } from '../lib/constants';
+import { useTranslations } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang);
+---
+<section class="section band-panel" id="visa">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">{t('vs.eb')}</p>
+      <h2>{t('vs.h2')}</h2>
+      <p class="lead">{t('vs.lead')}</p>
+    </div>
+    <div class="visa-grid">
+      <ol class="steps">
+        {['s1', 's2', 's3', 's4'].map((s) => (
+          <li><div><h3>{t(`${s}.t`)}</h3><p>{t(`${s}.p`)}</p></div></li>
+        ))}
+      </ol>
+      <aside class="fine">
+        <h3>{t('fp.t')}</h3>
+        <ul>{['fp1', 'fp2', 'fp3', 'fp4'].map((k) => <li>{t(k)}</li>)}</ul>
+      </aside>
+    </div>
+  </div>
+</section>

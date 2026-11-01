@@ -1,0 +1,40 @@
+---
+import type { Lang } from '../lib/constants';
+import type { Trip } from '../lib/trips';
+import { useTranslations } from '../i18n/ui';
+import TripArt from './TripArt.astro';
+
+interface Props { trip: Trip; lang: Lang }
+const { trip, lang } = Astro.props;
+const t = useTranslations(lang);
+const { price } = trip;
+---
+<article
+  class="j-card"
+  data-id={trip.id}
+  data-type={trip.type}
+  data-seasons={trip.seasons.join(' ')}
+  data-access={trip.access.level}
+>
+  <TripArt motif={trip.motif} code={trip.countryCode} />
+  <div class="j-body">
+    <p class="j-meta">{t(`type.${trip.type}`)} · {trip.country} · {trip.days} {t('days')}</p>
+    <h3>{trip.title}</h3>
+    <p class="j-sub">{trip.summary}</p>
+    <div class="j-tags" aria-label={t('best')}>
+      {trip.seasons.map((s) => <span class="tag">{t(`season.${s}`)}</span>)}
+      {trip.access.level !== 'not-suitable' && <span class="tag tag-acc">{t(`access.${trip.access.level}`)}</span>}
+    </div>
+    <div class="j-foot">
+      <p class="j-price">
+        <small><span class="only-private">{t('m.private')}</span><span class="only-group">{t('m.group')}</span> · {t('from')}</small>
+        <strong><span class="only-private">Rp {price.private} jt</span><span class="only-group">Rp {price.group} jt</span></strong>
+        <span class="alt">
+          <span class="only-private">{t('m.group')} Rp {price.group} jt</span>
+          <span class="only-group">{t('m.private')} Rp {price.private} jt</span>
+        </span>
+      </p>
+      <button type="button" class="j-open" data-id={trip.id} aria-haspopup="dialog">{t('see')} →</button>
+    </div>
+  </div>
+</article>

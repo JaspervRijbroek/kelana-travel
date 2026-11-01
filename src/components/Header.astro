@@ -1,0 +1,39 @@
+---
+import type { Lang } from '../lib/constants';
+import { useTranslations } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const base = import.meta.env.BASE_URL;
+const langs: { code: Lang; href: string }[] = [
+  { code: 'en', href: base },
+  { code: 'id', href: `${base}id/` },
+];
+---
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true">
+        <circle cx="16" cy="16" r="14.5" />
+        {[0, 30, 60, 90, 120, 150].map((deg) => (
+          <ellipse cx="16" cy="16" rx="13" ry="5" transform={deg ? `rotate(${deg} 16 16)` : undefined} />
+        ))}
+      </svg>
+      <span>Kelana</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#journeys">{t('nav.j')}</a>
+      <a href="#visa">{t('nav.v')}</a>
+      <a href="#pricing">{t('nav.p')}</a>
+      <a href="#enquire" class="nav-cta">{t('nav.e')}</a>
+    </nav>
+    <div class="lang" role="group" aria-label={t('lang.label')}>
+      {langs.map(({ code, href }) => (
+        <a href={href} hreflang={code} lang={code} aria-current={code === lang ? 'page' : undefined}>
+          {code.toUpperCase()}
+        </a>
+      ))}
+    </div>
+  </div>
+</header>

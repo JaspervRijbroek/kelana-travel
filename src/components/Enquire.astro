@@ -1,0 +1,78 @@
+---
+import { SEASONS, type Lang } from '../lib/constants';
+import type { Trip } from '../lib/trips';
+import { useTranslations } from '../i18n/ui';
+import JourneyOptions from './JourneyOptions.astro';
+
+interface Props { trips: Trip[]; lang: Lang }
+const { trips, lang } = Astro.props;
+const t = useTranslations(lang);
+const count = (level: Trip['access']['level']) => trips.filter((tr) => tr.access.level === level).length;
+---
+<section class="section band-surface" id="enquire">
+  <div class="wrap eq-grid">
+    <div class="eq-side">
+      <div class="section-head">
+        <p class="eyebrow">{t('eq.eb')}</p>
+        <h2>{t('eq.h2')}</h2>
+        <p class="lead">{t('eq.lead')}</p>
+      </div>
+      <ul>
+        <li>{t('eq.s1')}</li>
+        <li>{t('eq.s2')}</li>
+        <li>{t('eq.s4', { full: count('step-free'), partial: count('partial') })}</li>
+        <li>{t('eq.s3')}</li>
+      </ul>
+    </div>
+    <form class="eq-form" id="eq" novalidate>
+      <div class="field"><label for="eq-name">{t('eq.name')}</label><input type="text" id="eq-name" autocomplete="name" /></div>
+      <div class="field">
+        <label for="eq-wa">{t('eq.wa')}</label>
+        <div class="tel"><span>+62</span><input type="tel" id="eq-wa" inputmode="tel" autocomplete="tel-national" placeholder={t('ph.wa')} /></div>
+      </div>
+      <div class="field">
+        <label for="eq-journey">{t('eq.journey')}</label>
+        <select id="eq-journey">
+          <JourneyOptions trips={trips} lang={lang} />
+          <option value="unsure">{t('unsure')}</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="eq-when">{t('eq.when')}</label>
+        <select id="eq-when">
+          {SEASONS.map((s) => <option value={s} selected={s === 'school-holidays'}>{t(`season.${s}`)}</option>)}
+          <option value="unsure">{t('unsure')}</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="eq-mode">{t('eq.mode')}</label>
+        <select id="eq-mode">
+          <option value="private" selected>{t('m.private')}</option>
+          <option value="group">{t('m.group')}</option>
+          <option value="unsure">{t('unsure')}</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="eq-trav">{t('eq.trav')}</label>
+        <select id="eq-trav">
+          {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
+            <option value={n} selected={n === 2}>{n} {n > 1 ? t('travN') : t('trav1')}</option>
+          ))}
+        </select>
+      </div>
+      <label class="chk full">
+        <input type="checkbox" id="eq-wc" /><span><b>{t('eq.wc')}</b><small>{t('eq.wch')}</small></span>
+      </label>
+      <div class="field full">
+        <label for="eq-notes">{t('eq.notes')}</label>
+        <textarea id="eq-notes" placeholder={t('ph.notes')}></textarea>
+      </div>
+      <p class="err full" id="eq-err" role="alert" hidden></p>
+      <div class="submit-row full">
+        <button type="submit" class="btn btn-solid">{t('eq.submit')}</button>
+        <span class="demo">{t('eq.demo')}</span>
+      </div>
+      <p class="done full" id="eq-done" role="status" hidden></p>
+    </form>
+  </div>
+</section>

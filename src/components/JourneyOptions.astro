@@ -1,0 +1,18 @@
+---
+// <optgroup>s of trips grouped by type, for the calculator and enquiry selects.
+import { TRIP_TYPES, type Lang } from '../lib/constants';
+import type { Trip } from '../lib/trips';
+import { useTranslations } from '../i18n/ui';
+
+interface Props { trips: Trip[]; lang: Lang; selected?: string }
+const { trips, lang, selected = trips[0]?.id } = Astro.props;
+const t = useTranslations(lang);
+const groups = TRIP_TYPES.map((type) => ({ type, items: trips.filter((tr) => tr.type === type) })).filter((g) => g.items.length);
+---
+{groups.map(({ type, items }) => (
+  <optgroup label={t(`type.${type}`)}>
+    {items.map((tr) => (
+      <option value={tr.id} selected={tr.id === selected}>{tr.title} · {tr.days} {t('days')}</option>
+    ))}
+  </optgroup>
+))}

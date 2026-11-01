@@ -1,0 +1,45 @@
+---
+import type { Lang } from '../lib/constants';
+import { useTranslations } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang);
+---
+<section class="hero" id="top">
+  <canvas id="rosette" aria-hidden="true"></canvas>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">{t('hero.eb')}</p>
+      <h1 set:html={t('hero.h1')} />
+      <p class="lead">{t('hero.lead')}</p>
+      <div class="ctas">
+        <a class="btn btn-solid" href="#journeys">{t('hero.c1')}</a>
+        <a class="btn btn-ghost" href="#enquire">{t('hero.c2')}</a>
+      </div>
+      <ul class="facts">
+        <li>{t('hero.f1')}</li>
+        <li>{t('hero.f2')}</li>
+        <li>{t('hero.f3')}</li>
+        <li>{t('hero.f4')}</li>
+      </ul>
+    </div>
+    <div class="hero-pass">
+      <article class="pass" aria-label={t('pass.label')}>
+        <div class="pass-band"><span>{t('pass.band')}</span><span>{t('pass.sample')}</span></div>
+        <dl class="pass-grid">
+          <div class="wide"><dt>{t('pass.dest')}</dt><dd>{t('pass.destv')}</dd></div>
+          <div><dt>{t('pass.dur')}</dt><dd>{t('pass.durv')}</dd></div>
+          <div><dt>{t('pass.dep')}</dt><dd class="mono">CGK · 14 Jun 2027</dd></div>
+          <div><dt>{t('pass.cabin')}</dt><dd>{t('pass.cabinv')}</dd></div>
+          <div><dt>{t('pass.visa')}</dt><dd>{t('pass.visav')}</dd></div>
+          <div class="wide"><dt>{t('pass.pp')}</dt><dd class="price">Rp 214.000.000</dd></div>
+        </dl>
+        <div class="mrz" aria-hidden="true">
+          <span>JPIDN&lt;PUGLIA&lt;MATERA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+          <span>KL0427&lt;7IDN2706145&lt;CGK&lt;BRI&lt;04</span>
+        </div>
+        <div class="stamp" aria-hidden="true" set:html={t('pass.stamp')} />
+      </article>
+    </div>
+  </div>
+</section>

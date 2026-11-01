@@ -1,0 +1,55 @@
+---
+// The whole one-page site for one language. src/pages/index.astro and src/pages/id/index.astro render it.
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Covers from './Covers.astro';
+import Journeys from './Journeys.astro';
+import Visa from './Visa.astro';
+import Pricing from './Pricing.astro';
+import Enquire from './Enquire.astro';
+import Footer from './Footer.astro';
+import { LOCALES, type Lang } from '../lib/constants';
+import { getTrips } from '../lib/trips';
+import { formatOr } from '../lib/format';
+import { useTranslations } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const trips = await getTrips(lang);
+
+// Only what the browser script needs: prices, dates, access levels and the strings it writes at runtime.
+const clientKeys = [
+  'days', 'm.private', 'm.group', 'deps', 'unsure', 'trav1', 'travN',
+  'r_title', 'r_first', 'r_suite', 'r_stop', 'r_single', 'r_photo', 'r_chef', 'r_wc', 'r_incl',
+  'r_total', 'r_pp', 'r_inst', 'r_note',
+  'warn.step-free', 'warn.partial', 'warn.not-suitable',
+  'e_name', 'e_wa', 'thanks', 'thanks_wc', 'thanks_wcno', 'est',
+];
+const clientData = {
+  lang,
+  locale: LOCALES[lang],
+  alts: formatOr(trips.filter((tr) => tr.access.level === 'step-free').map((tr) => tr.title), lang),
+  trips: trips.map(({ id, title, days, price, departures, access }) => ({ id, title, days, price, departures, level: access.level })),
+  t: Object.fromEntries(clientKeys.map((k) => [k, t(k)])),
+};
+const json = JSON.stringify(clientData).replace(/</g, '\\u003c');
+---
+<Base lang={lang} title={t('meta.title')} description={t('hero.lead')}>
+  <Header lang={lang} />
+  <main>
+    <Hero lang={lang} />
+    <Covers lang={lang} />
+    <Journeys trips={trips} lang={lang} />
+    <Visa lang={lang} />
+    <Pricing trips={trips} lang={lang} />
+    <Enquire trips={trips} lang={lang} />
+  </main>
+  <Footer lang={lang} />
+
+  <script type="application/json" id="kelana-data" is:inline set:html={json} />
+  <script>
+    import '../scripts/site.ts';
+  </script>
+</Base>

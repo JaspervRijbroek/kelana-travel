@@ -1,0 +1,76 @@
+---
+import type { Lang } from '../lib/constants';
+import type { Trip } from '../lib/trips';
+import { formatDates, formatRupiah } from '../lib/format';
+import { included, useTranslations } from '../i18n/ui';
+import TripArt from './TripArt.astro';
+
+interface Props { trip: Trip; lang: Lang }
+const { trip, lang } = Astro.props;
+const t = useTranslations(lang);
+const { level, options, note } = trip.access;
+const noteClass = level === 'not-suitable' ? 'warn' : level === 'step-free' ? 'ok' : '';
+const titleId = `jd-title-${trip.id}`;
+---
+<dialog class="jd" id={`jd-${trip.id}`} data-id={trip.id} aria-labelledby={titleId}>
+  <TripArt motif={trip.motif} code={trip.countryCode} class="jd-art">
+    <button type="button" class="jd-close" aria-label={t('close')}>×</button>
+  </TripArt>
+  <div class="jd-body">
+    <div>
+      <p class="j-meta">
+        {t(`type.${trip.type}`)} · {trip.country} · {trip.days} {t('days')} · {trip.days - 1} {t('nights')}
+      </p>
+      <h2 id={titleId}>{trip.title}</h2>
+      <p class="lead">{trip.summary}</p>
+    </div>
+
+    <div class="jd-block">
+      <h4>{t('book')}</h4>
+      <div class="book-opts">
+        <div class="book-opt" data-m="private">
+          <b>{t('m.private')}</b><strong>{formatRupiah(trip.price.private * 1e6)}</strong><span>{t('note_private')}</span>
+        </div>
+        <div class="book-opt" data-m="group">
+          <b>{t('m.group')}</b><strong>{formatRupiah(trip.price.group * 1e6)}</strong>
+          <span>{t('deps')}: {formatDates(trip.departures, lang)}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="jd-cols">
+      <div class="jd-block"><h4>{t('route')}</h4><p class="jd-route">{trip.route}</p></div>
+      <div class="jd-block"><h4>{t('stay')}</h4><p>{trip.stay}</p></div>
+      <div class="jd-block">
+        <h4>{t('hl')}</h4>
+        <ul class="jd-list">{trip.highlights.map((h) => <li>{h}</li>)}</ul>
+      </div>
+      <div class="jd-block">
+        <h4>{t('inc')}</h4>
+        <ul class="jd-list">{included[lang].map((h) => <li>{h}</li>)}</ul>
+      </div>
+      <div class="jd-block"><h4>{t('halal')}</h4><p>{trip.halal}</p></div>
+      <div class="jd-block">
+        <h4>{t('access')} · {t(`access.${level}`)}</h4>
+        <p class={`note-box ${noteClass}`.trim()}>{note}</p>
+        {options.length > 0 && (
+          <div class="j-tags">{options.map((o) => <span class="tag tag-acc">{t(`opt.${o}`)}</span>)}</div>
+        )}
+      </div>
+    </div>
+
+    <div class="jd-foot">
+      <p class="j-price">
+        <small><span class="only-private">{t('m.private')}</span><span class="only-group">{t('m.group')}</span> · {t('ppall')}</small>
+        <strong>
+          <span class="only-private">{formatRupiah(trip.price.private * 1e6)}</span>
+          <span class="only-group">{formatRupiah(trip.price.group * 1e6)}</span>
+        </strong>
+      </p>
+      <div class="ctas">
+        <button type="button" class="btn btn-ghost" data-act="price">{t('bPrice')}</button>
+        <button type="button" class="btn btn-solid" data-act="ask">{t('bAsk')}</button>
+      </div>
+    </div>
+  </div>
+</dialog>

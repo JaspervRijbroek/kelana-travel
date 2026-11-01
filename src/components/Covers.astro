@@ -1,0 +1,25 @@
+---
+import type { Lang } from '../lib/constants';
+import { useTranslations } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang);
+---
+<section class="section" id="covers">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">{t('cv.eb')}</p>
+      <h2>{t('cv.h2')}</h2>
+      <p class="lead">{t('cv.lead')}</p>
+    </div>
+    <div class="covers">
+      {['c1', 'c2', 'c3', 'c4'].map((c) => (
+        <div class="cover">
+          <p class="eyebrow">{t(`${c}.k`)}</p>
+          <h3>{t(`${c}.t`)}</h3>
+          <p>{t(`${c}.p`)}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

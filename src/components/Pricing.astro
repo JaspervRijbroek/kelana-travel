@@ -1,0 +1,72 @@
+---
+import type { Lang } from '../lib/constants';
+import type { Trip } from '../lib/trips';
+import { useTranslations } from '../i18n/ui';
+import JourneyOptions from './JourneyOptions.astro';
+
+interface Props { trips: Trip[]; lang: Lang }
+const { trips, lang } = Astro.props;
+const t = useTranslations(lang);
+---
+<section class="section" id="pricing">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">{t('pr.eb')}</p>
+      <h2>{t('pr.h2')}</h2>
+      <p class="lead">{t('pr.lead')}</p>
+    </div>
+    <div class="calc-grid">
+      <form class="calc" id="calc">
+        <div class="field">
+          <label for="calc-journey">{t('pr.journey')}</label>
+          <select id="calc-journey"><JourneyOptions trips={trips} lang={lang} /></select>
+        </div>
+        <fieldset class="field">
+          <legend>{t('pr.mode')}</legend>
+          <div class="seg">
+            <label class="opt"><input type="radio" name="mode" id="mode-p" value="private" checked /><b>{t('m.private')}</b><span>{t('pr.modePh')}</span></label>
+            <label class="opt"><input type="radio" name="mode" id="mode-g" value="group" /><b>{t('m.group')}</b><span>{t('pr.modeGh')}</span></label>
+          </div>
+        </fieldset>
+        <div class="field">
+          <span class="flabel" id="trav-l">{t('pr.trav')}</span>
+          <div class="stepper" role="group" aria-labelledby="trav-l">
+            <button type="button" id="n-minus" aria-label={t('fewer')}>−</button>
+            <output id="calc-n">2</output>
+            <button type="button" id="n-plus" aria-label={t('more')}>+</button>
+          </div>
+        </div>
+        <fieldset class="field">
+          <legend>{t('pr.cabin')}</legend>
+          <div class="seg">
+            <label class="opt"><input type="radio" name="cabin" id="cabin-b" value="b" checked /><b>{t('pr.cabinB')}</b><span>{t('pr.inc')}</span></label>
+            <label class="opt"><input type="radio" name="cabin" id="cabin-f" value="f" /><b>{t('pr.cabinF')}</b><span>{t('pr.cabinFh')}</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>{t('pr.stay')}</legend>
+          <div class="seg">
+            <label class="opt"><input type="radio" name="stay" id="stay-s" value="s" checked /><b>{t('pr.stayS')}</b><span>{t('pr.inc')}</span></label>
+            <label class="opt"><input type="radio" name="stay" id="stay-u" value="u" /><b>{t('pr.stayU')}</b><span>{t('pr.stayUh')}</span></label>
+          </div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>{t('pr.add')}</legend>
+          <div class="checks">
+            <label class="chk"><input type="checkbox" id="add-stop" /><span><b>{t('pr.a1')}</b><small>{t('pr.a1h')}</small></span></label>
+            <label class="chk"><input type="checkbox" id="add-photo" /><span><b>{t('pr.a2')}</b><small>{t('pr.a2h')}</small></span></label>
+            <label class="chk"><input type="checkbox" id="add-chef" /><span><b>{t('pr.a3')}</b><small>{t('pr.a3h')}</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="field">
+          <legend>{t('tb.acc')}</legend>
+          <label class="chk"><input type="checkbox" id="calc-wc" /><span><b>{t('pr.wc')}</b><small>{t('pr.wch')}</small></span></label>
+        </fieldset>
+      </form>
+      <aside class="receipt" aria-live="polite">
+        <div id="receipt"></div>
+        <button type="button" class="btn btn-solid" id="r-send">{t('pr.send')}</button>
+      </aside>
+    </div>
+  </div>
+</section>

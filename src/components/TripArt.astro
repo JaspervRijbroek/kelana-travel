@@ -1,0 +1,15 @@
+---
+import { motifSvg } from '../lib/motifs';
+
+interface Props {
+  motif: string;
+  code: string;
+  class?: string;
+}
+const { motif, code, class: className = 'j-art' } = Astro.props;
+---
+<div class={className}>
+  <Fragment set:html={motifSvg(motif)} />
+  <span class="oval">{code}</span>
+  <slot />
+</div>
